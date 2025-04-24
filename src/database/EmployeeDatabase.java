@@ -32,7 +32,7 @@ public class EmployeeDatabase<T> {
                     case "status": emp.setActive((Boolean) newValue); break;
                 }
             }catch (InvalidEmployeeNameException| InvalidDepartmentException| InvalidSalaryException| InvalidRatingException| InvalidYearsofExperienceException e){
-                System.out.println("Caught exception: " + e.getClass().getSimpleName());
+                System.out.println("Caught exception:  " + e.getClass().getSimpleName());
                 System.out.println("Message: " + e.getMessage());
             }
 
