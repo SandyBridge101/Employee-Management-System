@@ -1,5 +1,7 @@
 package models;
 
+import Exceptions.*;
+
 public class Employee<T> implements Comparable<Employee<T>> {
     private T employeeId;
     private String name;
@@ -10,14 +12,30 @@ public class Employee<T> implements Comparable<Employee<T>> {
     private boolean isActive;
 
     public Employee(T employeeId, String name, String department, double salary,
-                    double performanceRating, int yearsOfExperience, boolean isActive) {
+                    double performanceRating, int yearsOfExperience, boolean isActive) throws InvalidEmployeeNameException, InvalidDepartmentException, InvalidSalaryException, InvalidRatingException, InvalidYearsofExperienceException {
         this.employeeId = employeeId;
-        this.name = name;
-        this.department = department;
-        this.salary = salary;
-        this.performanceRating = (performanceRating<=5)?performanceRating:5;
-        this.yearsOfExperience = yearsOfExperience;
+        this.name = (name==null?"NaN":name);
+        this.department = (department==null?"NaN":department);
+        this.salary = (salary>=0)?salary:0;
+        this.performanceRating = Math.max(0,Math.min(performanceRating,5));
+        this.yearsOfExperience = Math.max(yearsOfExperience, 0);
         this.isActive = isActive;
+
+        if (name==null){
+            throw new InvalidEmployeeNameException();
+        }
+        if (department==null){
+            throw new InvalidDepartmentException();
+        }
+        if (salary<0){
+            throw new InvalidSalaryException();
+        }
+        if (performanceRating<0||performanceRating>5){
+            throw new InvalidRatingException();
+        }
+        if (yearsOfExperience<0){
+            throw new InvalidYearsofExperienceException();
+        }
     }
 
     public T getEmployeeId() { return employeeId; }
@@ -26,13 +44,45 @@ public class Employee<T> implements Comparable<Employee<T>> {
     public double getSalary() { return salary; }
     public double getPerformanceRating() { return performanceRating; }
     public int getYearsOfExperience() { return yearsOfExperience; }
-    public boolean isActive() { return isActive; }
+    public boolean isActive() { return isActive;}
 
-    public void setName(String name) { this.name = name; }
-    public void setDepartment(String department) { this.department = department; }
-    public void setSalary(double salary) { this.salary = salary; }
-    public void setPerformanceRating(double rating) {this.performanceRating = (rating<=5)?rating:5;}
-    public void setYearsOfExperience(int years) { this.yearsOfExperience = years; }
+
+
+    //Data validation
+    public void setName(String name) throws InvalidEmployeeNameException {
+        this.name = (name==null?"NaN":name);
+        if (name==null){
+            throw new InvalidEmployeeNameException();
+        }
+
+    }
+    public void setDepartment(String department) throws InvalidDepartmentException {
+        this.department = (department==null?"NaN":department);
+        if (department==null){
+            throw new InvalidDepartmentException();
+        }
+
+    }
+    public void setSalary(double salary) throws InvalidSalaryException {
+        this.salary = (salary>=0)?salary:0;
+        if (salary<0){
+            throw new InvalidSalaryException();
+        }
+    }
+    public void setPerformanceRating(double rating) throws InvalidRatingException {
+        this.performanceRating = Math.max(0,Math.min(rating,5));
+        if (rating<0||rating>5){
+            throw new InvalidRatingException();
+        }
+
+    }
+    public void setYearsOfExperience(int years) throws InvalidYearsofExperienceException {
+        this.yearsOfExperience = Math.max(years, 0);
+        if (years<0){
+            throw new InvalidYearsofExperienceException();
+        }
+
+    }
     public void setActive(boolean active) { this.isActive = active; }
 
     @Override
