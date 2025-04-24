@@ -49,6 +49,7 @@ public class EmployeeDatabaseTest {
     @Test
     public void testSearchByDepartment() {
         List<Employee<UUID>> itEmployees = database.searchByDepartment("IT");
+
         assertNotNull(itEmployees);
         assertEquals(1, itEmployees.size());
         assertEquals("Alice Smith", itEmployees.get(0).getName());
