@@ -92,7 +92,6 @@ public class EmployeeDatabaseTest {
                     .orElse(null);
         } catch (NullPointerException e) {
             assertNotNull(e.getMessage()); // Optional: check that the exception has a message
-
         }
     }
 }
