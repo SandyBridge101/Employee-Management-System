@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import models.Employee;
 import database.EmployeeDatabase;
+import Exceptions.*;
 
 public class EmployeeManagementApp extends Application {
     private EmployeeDatabase<UUID> database = new EmployeeDatabase<>();
@@ -93,8 +94,8 @@ public class EmployeeManagementApp extends Application {
                 Employee<UUID> emp = new Employee<>(id, name, dept, salary, rating, experience, true);
                 database.addEmployee(emp);
                 refreshEmployeeList();
-            } catch (Exception ex) {
-                showAlert("Input Error", "Please enter valid employee data.");
+            } catch (InvalidEmployeeNameException| InvalidDepartmentException| InvalidSalaryException| InvalidRatingException| InvalidYearsofExperienceException ex) {
+                showAlert("Input Error", ex.getMessage());
             }
         });
 
@@ -121,8 +122,8 @@ public class EmployeeManagementApp extends Application {
                     selected.setPerformanceRating(rating);
                     selected.setYearsOfExperience(experience);
                     refreshEmployeeList();
-                } catch (Exception ex) {
-                    showAlert("Update Error", "Please enter valid updated data.");
+                } catch (InvalidEmployeeNameException| InvalidDepartmentException| InvalidSalaryException| InvalidRatingException| InvalidYearsofExperienceException ex) {
+                    showAlert("Update Error", ex.getMessage());
                 }
             }
         });
@@ -130,13 +131,23 @@ public class EmployeeManagementApp extends Application {
         searchButton.setOnAction(e -> {
             String name = searchField.getText();
             List<Employee<UUID>> results = database.searchByName(name);
-            employeeList.setAll(results);
+            if(results.isEmpty()) {
+                showAlert("Search Error", "Employee not found.");
+            }else {
+                employeeList.setAll(results);
+            }
+
         });
 
         deptFilterButton.setOnAction(e -> {
             String dept = deptFilterField.getText();
             List<Employee<UUID>> results = database.searchByDepartment(dept);
-            employeeList.setAll(results);
+            if(results.isEmpty()) {
+                showAlert("Query Error", "No employee exists in the given department.");
+            }else {
+                employeeList.setAll(results);
+            }
+
         });
 
 
@@ -145,7 +156,11 @@ public class EmployeeManagementApp extends Application {
                 double min = Double.parseDouble(minSalaryField.getText());
                 double max = Double.parseDouble(maxSalaryField.getText());
                 List<Employee<UUID>> results = database.filterBySalaryRange(min, max);
-                employeeList.setAll(results);
+                if(results.isEmpty()) {
+                    showAlert("Query Error", "No employee exists in the given salary range.");
+                }else {
+                    employeeList.setAll(results);
+                }
             } catch (Exception ex) {
                 showAlert("Filter Error", "Invalid salary range.");
             }
@@ -155,7 +170,11 @@ public class EmployeeManagementApp extends Application {
             try {
                 double minRating = Double.parseDouble(minRatingField.getText());
                 List<Employee<UUID>> results = database.filterByPerformance(minRating);
-                employeeList.setAll(results);
+                if(results.isEmpty()) {
+                    showAlert("Query Error", "No employee exists in the given performance range.");
+                }else{
+                    employeeList.setAll(results);
+                }
             } catch (Exception ex) {
                 showAlert("Filter Error", "Invalid rating value.");
             }
@@ -165,17 +184,30 @@ public class EmployeeManagementApp extends Application {
 
         sortExperienceButton.setOnAction(e -> {
             List<Employee<UUID>> sorted = database.sortByExperience();
-            employeeList.setAll(sorted);
+            if(sorted.isEmpty()) {
+                showAlert("Query Error", "List is empty");
+            }else{
+                employeeList.setAll(sorted);
+            }
+
         });
 
         sortSalaryButton.setOnAction(e -> {
             List<Employee<UUID>> sorted = database.sortBySalary();
-            employeeList.setAll(sorted);
+            if(sorted.isEmpty()) {
+                showAlert("Query Error", "List is empty");
+            }else{
+                employeeList.setAll(sorted);
+            }
         });
 
         sortRatingButton.setOnAction(e -> {
             List<Employee<UUID>> sorted = database.sortByPerformance();
-            employeeList.setAll(sorted);
+            if(sorted.isEmpty()) {
+                showAlert("Query Error", "List is empty");
+            }else{
+                employeeList.setAll(sorted);
+            }
         });
 
         refreshButton.setOnAction(e ->{
