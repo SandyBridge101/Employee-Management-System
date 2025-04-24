@@ -24,6 +24,8 @@ public class Test {
         System.out.println("\nTop Performers:");
         db.filterByPerformance(4.0).forEach(System.out::println);
 
+        db.searchByName("Ki");
+
         System.out.println("\nSorted by Experience:");
         db.sortByExperience().forEach(System.out::println);
 

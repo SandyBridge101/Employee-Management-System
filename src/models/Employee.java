@@ -21,10 +21,10 @@ public class Employee<T> implements Comparable<Employee<T>> {
         this.yearsOfExperience = Math.max(yearsOfExperience, 0);
         this.isActive = isActive;
 
-        if (name==null){
+        if (name==null||name.isEmpty()) {
             throw new InvalidEmployeeNameException();
         }
-        if (department==null){
+        if (department==null||department.isEmpty()){
             throw new InvalidDepartmentException();
         }
         if (salary<0){
@@ -51,14 +51,14 @@ public class Employee<T> implements Comparable<Employee<T>> {
     //Data validation
     public void setName(String name) throws InvalidEmployeeNameException {
         this.name = (name==null?"NaN":name);
-        if (name==null){
+        if (name==null||name.isEmpty()) {
             throw new InvalidEmployeeNameException();
         }
 
     }
     public void setDepartment(String department) throws InvalidDepartmentException {
         this.department = (department==null?"NaN":department);
-        if (department==null){
+        if (department==null||department.isEmpty()){
             throw new InvalidDepartmentException();
         }
 
