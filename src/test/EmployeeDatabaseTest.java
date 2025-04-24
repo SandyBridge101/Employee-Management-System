@@ -66,6 +66,7 @@ public class EmployeeDatabaseTest {
     @Test
     public void testRemoveNonExistingEmployeeThrows() {
         UUID fakeId = UUID.randomUUID();
+
         database.removeEmployee(fakeId);
     }
 }
