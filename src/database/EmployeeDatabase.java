@@ -2,8 +2,11 @@ package database;
 
 import java.util.*;
 import java.util.stream.*;
+
+import Exceptions.InvalidEmployeeNameException;
 import models.Employee;
 import comparators.*;
+import Exceptions.*;
 
 public class EmployeeDatabase<T> {
     private Map<T, Employee<T>> employeeMap = new HashMap<>();
@@ -19,14 +22,20 @@ public class EmployeeDatabase<T> {
     public void updateEmployeeDetails(T employeeId, String field, Object newValue) {
         Employee<T> emp = employeeMap.get(employeeId);
         if (emp != null) {
-            switch (field.toLowerCase()) {
-                case "name": emp.setName((String) newValue); break;
-                case "department": emp.setDepartment((String) newValue); break;
-                case "salary": emp.setSalary((Double) newValue); break;
-                case "performance": emp.setPerformanceRating((Double) newValue); break;
-                case "experience": emp.setYearsOfExperience((Integer) newValue); break;
-                case "status": emp.setActive((Boolean) newValue); break;
+            try{
+                switch (field.toLowerCase()) {
+                    case "name": emp.setName((String) newValue); break;
+                    case "department": emp.setDepartment((String) newValue); break;
+                    case "salary": emp.setSalary((Double) newValue); break;
+                    case "performance": emp.setPerformanceRating((Double) newValue); break;
+                    case "experience": emp.setYearsOfExperience((Integer) newValue); break;
+                    case "status": emp.setActive((Boolean) newValue); break;
+                }
+            }catch (InvalidEmployeeNameException| InvalidDepartmentException| InvalidSalaryException| InvalidRatingException| InvalidYearsofExperienceException e){
+                System.out.println("Caught exception: " + e.getClass().getSimpleName());
+                System.out.println("Message: " + e.getMessage());
             }
+
         }
     }
 
@@ -35,6 +44,7 @@ public class EmployeeDatabase<T> {
     }
 
     public List<Employee<T>> searchByDepartment(String department) {
+
         return employeeMap.values().stream()
                 .filter(e -> e.getDepartment().equalsIgnoreCase(department))
                 .collect(Collectors.toList());
@@ -69,6 +79,7 @@ public class EmployeeDatabase<T> {
         return employeeMap.values().stream()
                 .sorted()
                 .collect(Collectors.toList());
+
     }
 
     public List<Employee<T>> sortBySalary() {
@@ -86,7 +97,13 @@ public class EmployeeDatabase<T> {
     public void giveSalaryRaiseToTopPerformers(double threshold, double percentage) {
         employeeMap.values().stream()
                 .filter(e -> e.getPerformanceRating() >= threshold)
-                .forEach(e -> e.setSalary(e.getSalary() * (1 + percentage / 100)));
+                .forEach(e -> {
+                    try {
+                        e.setSalary(e.getSalary() * (1 + percentage / 100));
+                    } catch (InvalidSalaryException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
     }
 
     public List<Employee<T>> getTopPaidEmployees(int limit) {
